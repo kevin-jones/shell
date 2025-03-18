@@ -33,5 +33,28 @@ fi
 # some more ls aliases
 alias ll='ls -alF'
 alias la='ls -A'
-alias l='ls -CF'
+
+# Tail the laravel.log
+function lalog() {
+    local LOG_DIR="${1:-storage/logs}"       # optional first argument for custom log dir
+    local TODAY_LOG="laravel-$(date +%F).log"
+    local DEFAULT_LOG="laravel.log"
+
+    # Full paths for convenience
+    local TODAY_PATH="$LOG_DIR/$TODAY_LOG"
+    local DEFAULT_PATH="$LOG_DIR/$DEFAULT_LOG"
+
+    if [ -f "$TODAY_PATH" ]; then
+        echo "Tailing today's log ($TODAY_LOG)..."
+        tail -f "$TODAY_PATH"
+    elif [ -f "$DEFAULT_PATH" ]; then
+        echo "Today's log not found; falling back to $DEFAULT_LOG..."
+        tail -f "$DEFAULT_PATH"
+    else
+        echo "No log file found at either:"
+        echo " - $TODAY_PATH"
+        echo " - $DEFAULT_PATH"
+        return 1
+    fi
+}
 
